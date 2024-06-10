@@ -1,7 +1,12 @@
 #' @import data.table
 #' @import Matrix
-#' @importFrom stats fisher.test quantile xtabs
+#' @import shiny
+#' @import plotly
+#' @import lattice
+#' @importFrom stats fisher.test quantile xtabs qbeta
 #' @importFrom piggyback pb_download
+#' @importFrom grid grid.polygon gpar
+
 
 
 
@@ -13,6 +18,8 @@ IBD <- function(ibd_data = "name.ibd", caco = "name.Rda", ...) {
   class(ibd) <- append("IBD",class(ibd))
   return(ibd)
 }
+
+utils::globalVariables(c("caco_file_name", "data_folder_address"))
 
 
 

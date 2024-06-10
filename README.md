@@ -1,27 +1,26 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# gwid
+# Genome-Wide Identity by Descent <img src="man/figures/hex1.png" width = "175" height = "200" align="right" />
 
 <!-- badges: start -->
 
 [![R-CMD-check](https://github.com/soroushmdg/gwid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/soroushmdg/gwid/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
-GWID (Genome Wide Identity by Descent) is an R-package designed for the
-analysis of IBD (Identity by Descent) data, to discover rare alleles
-(susceptibility regions) associated with case-control phenotype.
-Although Genome Wide Association Studies (GWAS) successfully reveal
-numerous common variants linked to diseases, they exhibit lack of power
-to identify rare alleles. To address this limitation, we have developed
-a pipeline that employs IBD data (output of refined-IBD software). This
-methodology encompasses a sequential process for analyzing the
-aforementioned data within isolated populations. The primary objective
-of this approach is to enhance the sensitivity of variant detection by
-utilizing information from genetically related individuals, thereby
-facilitating the identification of causal variants. An overall
-representation of the pipeline is visually depicted in the following
-figure.
+gwid is an R-package designed for the analysis of IBD (Identity by
+Descent) data, to discover rare alleles (susceptibility regions)
+associated with case-control phenotype. Although Genome Wide Association
+Studies (GWAS) successfully reveal numerous common variants linked to
+diseases, they exhibit lack of power to identify rare alleles. To
+address this limitation, we have developed a pipeline that employs IBD
+data (output of refined-IBD software). This methodology encompasses a
+sequential process for analyzing the aforementioned data within isolated
+populations. The primary objective of this approach is to enhance the
+sensitivity of variant detection by utilizing information from
+genetically related individuals, thereby facilitating the identification
+of causal variants. An overall representation of the pipeline is
+visually depicted in the following figure.
 
 <div class="figure" style="text-align: center">
 
@@ -47,7 +46,14 @@ while phenotype data is represented using an R list.
 
 ## Installation
 
-You can install the development version of `gwid` from
+You can install the stable version of `gwid` from
+[CRAN](https://cran.r-project.org/) with:
+
+``` r
+install.packages("gwid")
+```
+
+Also, you can install the development version of `gwid` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -97,9 +103,9 @@ library(gwid)
 
 # case-control data
 case_control <- gwid::case_control(case_control_rda = case_control_data_file)
-names(case_control) #cases and controls group
+names(case_control) # cases and controls group
 #> [1] "cases" "case1" "case2" "cont1" "cont2" "cont3"
-summary(case_control) # in here, we only consider cases,cont1,cont2,cont3 groups in the study
+summary(case_control) # in here, we only consider cases,cont1,cont2,cont3
 #>       Length Class  Mode     
 #> cases 478    -none- character
 #> case1 178    -none- character
@@ -107,17 +113,24 @@ summary(case_control) # in here, we only consider cases,cont1,cont2,cont3 groups
 #> cont1 477    -none- character
 #> cont2 478    -none- character
 #> cont3 478    -none- character
+# groups in the study
 case_control$cases[1:3] # first three subject names of cases group
 #> [1] "MC.154405@1075678440" "MC.154595@1075642175" "MC.154701@1076254706"
 
-# read SNP data (use SNPRelate to convert it to gds) and count number of minor alleles  
-snp_data_gds <- gwid::build_gwas(gds_data = genome_data_file,caco = case_control,gwas_generator = TRUE)
+# read SNP data (use SNPRelate to convert it to gds) and count number of
+# minor alleles
+snp_data_gds <- gwid::build_gwas(gds_data = genome_data_file, 
+                                 caco = case_control, 
+                                 gwas_generator = TRUE)
 class(snp_data_gds)
 #> [1] "gwas"
 names(snp_data_gds)
 #> [1] "smp.id"   "snp.id"   "snp.pos"  "smp.indx" "smp.snp"  "caco"     "snps"
-head(snp_data_gds$snps) # it has information about counts of minor alleles in each location.
+# it has information about counts of minor alleles in each location.
+head(snp_data_gds$snps) 
+#> Key: <snp_pos>
 #>    snp_pos case_control value
+#>      <int>       <fctr> <int>
 #> 1:   66894        cases   627
 #> 2:   66894        case1   240
 #> 3:   66894        case2   387
@@ -126,45 +139,50 @@ head(snp_data_gds$snps) # it has information about counts of minor alleles in ea
 #> 6:   66894        cont3   646
 
 # read haplotype data (output of beagle)
-haplotype_data <- gwid::build_phase(phased_vcf = phase_data_file,caco = case_control)
+haplotype_data <- gwid::build_phase(phased_vcf = phase_data_file, 
+                                    caco = case_control)
 class(haplotype_data)
 #> [1] "phase"
 names(haplotype_data)
 #> [1] "Hap.1" "Hap.2"
-dim(haplotype_data$Hap.1) #22302 SNP and 1911 subjects
+dim(haplotype_data$Hap.1) # 22302 SNP and 1911 subjects
 #> [1] 22302  1911
 
 # read IBD data (output of Refined-IBD)
-ibd_data <- gwid::build_gwid(ibd_data = ibd_data_file,gwas = snp_data_gds)
+ibd_data <- gwid::build_gwid(ibd_data = ibd_data_file, 
+                             gwas = snp_data_gds)
 class(ibd_data)
 #> [1] "gwid"
 ibd_data$ibd # refined IBD output
-#>                              V1 V2                      V3 V4 V5        V6
-#>      1: MC.AMD127769@0123889787  2    MC.160821@1075679055  1  3  32933295
-#>      2: MC.AMD127769@0123889787  1 MC.AMD107154@0123908746  1  3  29995340
-#>      3: MC.AMD127769@0123889787  2    9474283-1-0238040187  1  3  34165785
-#>      4: MC.AMD127769@0123889787  1    MC.159487@1075679208  2  3  21526766
-#>      5:    MC.163045@1082086165  2    MC.160470@1075679095  1  3  11822616
-#>     ---                                                                   
-#> 377560:    1492602-1-0238095971  2    2235472-1-0238095471  2  3 194785443
-#> 377561:    4618455-1-0238095900  2    3848034-1-0238094219  1  3 190235788
-#> 377562:    MC.160332@1075641581  2    9630188-1-0238038787  2  3 184005719
-#> 377563: MC.AMD122238@0124011436  2    MC.159900@1076254946  1  3 181482803
-#> 377564: MC.AMD105910@0123907456  1    7542312-1-0238039298  1  3 182440135
-#>                V7   V8    V9
-#>      1:  34817627 3.26 1.884
-#>      2:  31752607 4.35 1.757
-#>      3:  35898774 6.36 1.733
-#>      4:  23162240 8.71 1.635
-#>      5:  13523010 5.29 1.700
-#>     ---                     
-#> 377560: 196328849 4.92 1.543
-#> 377561: 192423862 7.77 2.188
-#> 377562: 186184328 5.95 2.179
-#> 377563: 184801115 3.58 3.318
-#> 377564: 183972729 3.03 1.533
-ibd_data$res # count number of IBD for each SNP location 
+#>                              V1    V2                      V3    V4    V5
+#>                          <char> <int>                  <char> <int> <int>
+#>      1: MC.AMD127769@0123889787     2    MC.160821@1075679055     1     3
+#>      2: MC.AMD127769@0123889787     1 MC.AMD107154@0123908746     1     3
+#>      3: MC.AMD127769@0123889787     2    9474283-1-0238040187     1     3
+#>      4: MC.AMD127769@0123889787     1    MC.159487@1075679208     2     3
+#>      5:    MC.163045@1082086165     2    MC.160470@1075679095     1     3
+#>     ---                                                                  
+#> 377560:    1492602-1-0238095971     2    2235472-1-0238095471     2     3
+#> 377561:    4618455-1-0238095900     2    3848034-1-0238094219     1     3
+#> 377562:    MC.160332@1075641581     2    9630188-1-0238038787     2     3
+#> 377563: MC.AMD122238@0124011436     2    MC.159900@1076254946     1     3
+#> 377564: MC.AMD105910@0123907456     1    7542312-1-0238039298     1     3
+#>                V6        V7    V8    V9
+#>             <int>     <int> <num> <num>
+#>      1:  32933295  34817627  3.26 1.884
+#>      2:  29995340  31752607  4.35 1.757
+#>      3:  34165785  35898774  6.36 1.733
+#>      4:  21526766  23162240  8.71 1.635
+#>      5:  11822616  13523010  5.29 1.700
+#>     ---                                
+#> 377560: 194785443 196328849  4.92 1.543
+#> 377561: 190235788 192423862  7.77 2.188
+#> 377562: 184005719 186184328  5.95 2.179
+#> 377563: 181482803 184801115  3.58 3.318
+#> 377564: 182440135 183972729  3.03 1.533
+ibd_data$res # count number of IBD for each SNP location
 #>           snp_pos case_control value
+#>             <num>       <fctr> <num>
 #>      1:     66894        cases    27
 #>      2:     82010        cases    28
 #>      3:     89511        cases    29
@@ -191,19 +209,24 @@ consideration.
 
 ``` r
 # plot count of IBD in chromosome 3
-plot(ibd_data,y = c("cases","cont1"),ly = FALSE) 
+plot(ibd_data,y = c("cases","cont1"),
+     ly = FALSE) 
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
 
 ``` r
 
 # Further investigate location between 117M and 122M
 # significant number of IBD's in group cases, compare to cont1, cont2 and cont3.
-plot(ibd_data,y = c("cases","cont1"),snp_start = 117026294,snp_end = 122613594,ly = FALSE) 
+plot(ibd_data,
+     y = c("cases","cont1"),
+     snp_start = 117026294,
+     snp_end = 122613594,
+     ly = FALSE) 
 ```
 
-<img src="man/figures/README-unnamed-chunk-4-2.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-6-2.png" width="100%" />
 
 Through the utilization of the `fisher_test` method, it becomes possible
 to calculate p-values within chosen regions. These p-values help assess
@@ -211,16 +234,31 @@ whether there are noteworthy differences in counts between the case and
 control groups.
 
 ``` r
-model_fisher <- gwid::fisher_test(ibd_data,case_control,reference = "cases",
-                                             snp_start = 117026294,snp_end = 122613594)
+model_fisher <- gwid::fisher_test(ibd_data,case_control,
+                                  reference = "cases",
+                                  snp_start = 117026294,
+                                  snp_end = 122613594)
 
 class(model_fisher)
 #> [1] "test_snps"  "data.table" "data.frame"
 
-plot(model_fisher, y = c("cases","cont1"),ly = FALSE)
+plot(model_fisher, 
+     y = c("cases","cont1"),
+     ly = FALSE)
 ```
 
-<img src="man/figures/README-unnamed-chunk-5-1.png" width="100%" />
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+
+You can perform permutation test as follows:
+
+``` r
+model_permutation <- gwid::permutation_test(ibd_data,gwas = snp_data_gds,
+                                            reference = "cases",
+                                            snp_start = 117026294,
+                                            snp_end = 122613594,
+                                            nperm = 10000)
+plot(model_permutation)
+```
 
 The `haplotype_structure` method can be utilized to extract haplotypes
 from regions that exhibit IBD patterns in a sliding window manner. `w`
@@ -236,11 +274,12 @@ class(hap_str)
 
 hap_str[sample(1:nrow(hap_str),size = 5),] # structures column have haplotype of length w=10 
 #>    case_control   snp_pos window_number                     smp structures
-#> 1:        cases 121168167           491    MC.161208@1076254558 0000000000
-#> 2:        cases 119446862           319 MC.AMD114863@0123861602 1000000001
-#> 3:        cases 118941441           212 MC.AMD105884@0123861718 0000010000
-#> 4:        cases 118945796           215 MC.AMD106221@0124011373 0100101100
-#> 5:        cont1 118793832           187 MC.AMD107926@0123861155 1000010000
+#>          <fctr>     <num>         <int>                  <char>     <char>
+#> 1:        cont1 121207883           502    MC.159481@1075641352 0000000100
+#> 2:        cases 121356079           554 MC.AMD102275@0123861016 0000000000
+#> 3:        case2 121168167           491 MC.AMD117730@0123911620 0000000000
+#> 4:        cont1 121712434           624 MC.AMD103161@0124011280 0000100000
+#> 5:        cont1 122040062           669 MC.AMD126224@0123908828 1011010000
 ```
 
 The `haplotype_frequency` method can be employed to extract the count of

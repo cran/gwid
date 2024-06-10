@@ -1,11 +1,11 @@
 Package: gwid
 Type: Package
 Title: Genome-Wide Identity-by-Descent
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: c(
     person("Soroush", "Mahmoudiandehkordi", email = "soroushmdg@gmail.com", role = c("aut", "cre")),
-    person("Mehdi", "Maadooliat", email = "mehdi.maadooliat@mu.edu", role = "aut"),
-    person("Steven", "Schrodi", email = "schrodi@wisc.edu", role = "aut")
+    person("Steven J", "Schrodi", email = "schrodi@wisc.edu", role = "aut"),
+    person("Mehdi", "Maadooliat", email = "mehdi.maadooliat@mu.edu", role = "aut")
     )
 Maintainer: Soroush Mahmoudiandehkordi <soroushmdg@gmail.com>
 Description: Methods and tools for the analysis of Genome Wide 
@@ -17,17 +17,20 @@ Description: Methods and tools for the analysis of Genome Wide
     multiple Single Nucleotide Polymorphisms (SNPs).
 License: MIT + file LICENSE
 Encoding: UTF-8
+biocViews:
 Imports: data.table, gdsfmt, SNPRelate, Matrix, ggplot2, plotly, utils,
-        stats, RcppRoll, methods, piggyback
-RoxygenNote: 7.2.3
+        stats, RcppRoll, methods, piggyback, shiny, lattice, grid
+RoxygenNote: 7.3.1
 Suggests: knitr, magrittr, rmarkdown, testthat (>= 3.0.0)
 Config/testthat/edition: 3
-URL: https://github.com/soroushmdg/gwid
+URL: https://github.com/soroushmdg/gwid,
+        https://soroushmdg.github.io/gwid/
 BugReports: https://github.com/soroushmdg/gwid/issues
+VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2023-12-14 14:00:32 UTC; soroush
+Packaged: 2024-06-10 04:49:58 UTC; soroushmahmoudiandehkordi
 Author: Soroush Mahmoudiandehkordi [aut, cre],
-  Mehdi Maadooliat [aut],
-  Steven Schrodi [aut]
+  Steven J Schrodi [aut],
+  Mehdi Maadooliat [aut]
 Repository: CRAN
-Date/Publication: 2023-12-14 16:40:08 UTC
+Date/Publication: 2024-06-10 05:10:05 UTC

@@ -4,7 +4,18 @@
 \alias{plot.test_snps}
 \title{Line plot of test_snps objects}
 \usage{
-\method{plot}{test_snps}(x, y = NA, title, snp_start, snp_end, ly = TRUE, line_size = 0.6, ...)
+\method{plot}{test_snps}(
+  x,
+  y = NA,
+  title,
+  snp_start,
+  snp_end,
+  ly = TRUE,
+  line_size = 0.6,
+  log_transformation = TRUE,
+  QQplot = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class test_snps.}
@@ -18,10 +29,14 @@ subject groups i.e. y = c("case","control")}
 
 \item{snp_end}{select ending position of snps.}
 
-\item{ly}{if `TRUE`, we have a `plotly` object and if it is `FALSE` plot is going to be
-a `ggplot` object.}
+\item{ly}{if `TRUE`, we have a `plotly` object and if it is `FALSE` plot
+is going to be a `ggplot` object.}
 
 \item{line_size}{geom_line size}
+
+\item{log_transformation}{if `TRUE` plot -log10 transformation of p_values.}
+
+\item{QQplot}{if TRUE, plot QQplot of P-values}
 
 \item{...}{other variables}
 }
